@@ -53,5 +53,5 @@ Route::get('/news/{id}', static function (int $id): string {
 });
 
 Route::get('/info', static function (): string {
-    return '<p>На этом сайте будут публиковаться новости.</p>';
+    return '<p>На этом сайте будут публиковаться свежие новости.</p>';
 });
