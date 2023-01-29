@@ -9,15 +9,23 @@ class NewsController extends Controller
 {
     use NewsTrait;
 
-    public function index()
+    public function index(int $cat)
     {
-        return \view('news.index', [
-            'news' => $this->getNews()
-        ]);
+        if ($cat < count($this->categories))
+            return \view('news.index', [
+                'news' => $this->getNews(),
+                'cat' => $cat,
+                'category' => $this->getCategory($cat)
+            ]);
     }
 
     public function show(int $id)
     {
-        return $this->getNews($id);
+        return \view('news.show', ['news' => $this->getNews($id)]);
+    }
+
+    public function showCategories()
+    {
+        return \view('news.categories', ['categories' => $this->getCategories()]);
     }
 }

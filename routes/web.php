@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InfoController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,11 +29,10 @@ Route::get('/welcome', static function (): string {
     return "<h1 style='text-align:center'>Добро пожаловать на наш сайт!</h1>";
 });
 
-Route::get('/info', static function (): string {
-    return '<p>На этом сайте будут публиковаться свежие новости.</p>';
-});
+Route::get('/info', [InfoController::class, 'showInfo']);
 
 Route::group(['prefix' => ''], static function () {
-    Route::get('/news', [NewsController::class, 'index'])->name('news');
+    Route::get('/all', [NewsController::class, 'showCategories'])->name('categories.show');
+    Route::get('/news/{cat}', [NewsController::class, 'index'])->where('cat', '\d+')->name('news');
     Route::get('/news/{id}/show', [NewsController::class, 'show'])->where('id', '\d+')->name('news.show');
 });
