@@ -15,13 +15,13 @@ class NewsController extends Controller
             return \view('news.index', [
                 'news' => $this->getNews(),
                 'cat' => $cat,
-                'category' => $this->getCategory($cat)
+                'categories' => $this->getCategories()
             ]);
     }
 
     public function show(int $id)
     {
-        return \view('news.show', ['news' => $this->getNews($id)]);
+        return \view('news.show', ['news' => $this->getNews($id), 'categories' => $this->getCategories()]);
     }
 
     public function showCategories()

@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 trait NewsTrait
 {
     private $categories = [
-        ['id' => 0, 'name' => 'Политика'],
-        ['id' => 1, 'name' => 'Наука'],
-        ['id' => 2, 'name' => 'Спорт'],
-        ['id' => 3, 'name' => 'Образование'],
-        ['id' => 4, 'name' => 'Шоу-бизнес'],
+        ['id' => 0, 'name' => 'Мир'],
+        ['id' => 1, 'name' => 'РФ'],
+        ['id' => 2, 'name' => 'Технологии'],
+        ['id' => 3, 'name' => 'Дизайн'],
+        ['id' => 4, 'name' => 'Культура'],
+        ['id' => 5, 'name' => 'Бизнес'],
+        ['id' => 6, 'name' => 'Политика'],
+        ['id' => 7, 'name' => 'Наука'],
+        ['id' => 8, 'name' => 'Здоровье'],
+        ['id' => 9, 'name' => 'Путешествия'],
     ];
 
 
@@ -35,14 +40,14 @@ trait NewsTrait
     public function getNews(int $id = null): array
     {
         $news = [];
-        $quantityNews = 20;
+        $quantityNews = 40;
         if ($id === null) {
             for ($i = 1; $i < $quantityNews; $i++) {
                 $news[$i] = [
                     'id' => $i,
                     'category_id' => intdiv($i - 1, 4),
                     'title' => fake()->jobTitle(),
-                    'description' => fake()->text(300),
+                    'description' => fake()->text(100),
                     'author' => fake()->userName(),
                     'created_time' => now()->format('Y.m.d H:i')
                 ];

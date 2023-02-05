@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\IndexController as AdminController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,10 @@ Route::get('/welcome', static function (): string {
 });
 
 Route::get('/info', [InfoController::class, 'showInfo']);
+
+Route::group(['prefix' => 'admin'], static function () {
+    Route::get('/', AdminController::class)->name('admin.index');
+});
 
 Route::group(['prefix' => ''], static function () {
     Route::get('/all', [NewsController::class, 'showCategories'])->name('categories.show');
