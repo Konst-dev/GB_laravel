@@ -3,6 +3,8 @@
     @include('inc.menu', ['categories' => $categories])
 @endsection
 @section('content')
+    <a href="{{ route('feedback', []) }}">Оставить отзыв</a> |
+    <a href="{{ route('order', []) }}">Заказ</a>
     <div class="row">
         <div class="col-md-8 blog-main">
             <h3 class="pb-3 mb-4 font-italic border-bottom">
