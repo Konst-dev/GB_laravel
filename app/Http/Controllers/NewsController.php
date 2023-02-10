@@ -3,41 +3,55 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\News;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-    use NewsTrait;
 
     public function index(int $cat): View
     {
-        if ($cat < count($this->categories))
-            return \view('news.index', [
-                'news' => $this->getNews(),
-                'cat' => $cat,
-                'categories' => $this->getCategories()
-            ]);
+        $model = new News();
+        $newslist = $model->getNewsByCategory($cat);
+        $modelC = new Category();
+        $categorylist = $modelC->getCategories();
+        return \view('news.index', [
+            'news' => $newslist,
+            'cat' => $cat,
+            'categories' => $categorylist
+        ]);
     }
 
     public function show(int $id)
     {
-        return \view('news.show', ['news' => $this->getNews($id), 'categories' => $this->getCategories()]);
+        $model = new News();
+        $news = $model->getNewsById($id);
+        $modelC = new Category();
+        $categorylist = $modelC->getCategories();
+        return \view('news.show', ['news' => $news, 'categories' => $categorylist]);
     }
 
     public function showCategories()
     {
-        return \view('news.categories', ['categories' => $this->getCategories()]);
+        $model = new Category();
+        $categorylist = $model->getCategories();
+        return \view('news.categories', ['categories' => $categorylist]);
     }
 
     public function feedBack()
     {
-        return \view('news.feedback', ['categories' => $this->getCategories()]);
+        $model = new Category();
+        $categorylist = $model->getCategories();
+        return \view('news.feedback', ['categories' => $categorylist]);
     }
 
     public function order()
     {
-        return \view('news.order', ['categories' => $this->getCategories()]);
+        $model = new Category();
+        $categorylist = $model->getCategories();
+        return \view('news.order', ['categories' => $categorylist]);
     }
 
     public function saveFeedBack(Request $request)
