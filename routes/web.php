@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\IndexController as AdminController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\InfoController;
-use App\Http\Controllers\NewsController;
+use App\Http\Controllers\{NewsController, OrderController};
 use Illuminate\Support\Facades\Route;
 
 
@@ -44,8 +44,10 @@ Route::group(['prefix' => ''], static function () {
     Route::get('/all', [NewsController::class, 'showCategories'])->name('categories.show');
     Route::get('/news/{cat}', [NewsController::class, 'index'])->where('cat', '\d+')->name('news');
     Route::get('/news/{id}/show', [NewsController::class, 'show'])->where('id', '\d+')->name('news.show');
-    Route::get('/news/feedback', [NewsController::class, 'feedback'])->name('feedback');
-    Route::get('/news/order', [NewsController::class, 'order'])->name('order');
-    Route::get('/news/savefeedback', [NewsController::class, 'saveFeedBack'])->name('save.feedback');
-    Route::get('/news/saveorder', [NewsController::class, 'saveOrder'])->name('save.order');
+    Route::get('/news/feedback', [OrderController::class, 'feedback'])->name('feedback');
+    Route::get('/news/order', [OrderController::class, 'order'])->name('order');
+    Route::get('/news/savefeedback', [OrderController::class, 'saveFeedBack'])->name('save.feedback');
+    Route::get('/news/saveorder', [OrderController::class, 'saveOrder'])->name('save.order');
+    Route::get('/news/editorder/{id}', [OrderController::class, 'editOrder'])->where('id', '\d+')->name('edit.order');
+    Route::get('/news/updateorder', [OrderController::class, 'updateOrder'])->name('update.order');
 });

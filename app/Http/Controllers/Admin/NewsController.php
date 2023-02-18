@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\NewsStatus;
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\QueryBuilders\CategoriesQueryBuilder;
+use App\QueryBuilders\NewsQueryBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class NewsController extends Controller
 {
@@ -15,28 +20,11 @@ class NewsController extends Controller
      *
      * @return View
      */
-    public function index(): View
+    public function index(NewsQueryBuilder $newsQueryBuilder): View
     {
-        $model = new News();
-        $newslist = $model->getNews();
-        // $join = DB::table('news')
-        //     ->join('category_has_news as chn', 'news.id', '=', 'chn.news_id')
-        //     ->join('categories', 'chn.category_id', '=', 'categories.id')
-        //     ->select('news.*', 'chn.category_id', 'categories.title as ctitle')
-        //     //->toSql(); sql-запросы
-        //     ->get();
-
-        // //$where = DB::table('news')->where('title', 'like', '%ti%')->get();
-        // $where = DB::table('news')->where([
-        //     ['title', 'like', '%ti%'],
-        //     ['id', '>', '3']
-        // ])->get();
-
-        // $where_new = DB::table('news')->whereBetween('id', [3, 6])->get();
-
-        // dd($join, $where, $where_new);
-        // die;
-        return \view('admin.news.news', ['newslist' => $newslist]);
+        return \view('admin.news.news', [
+            'newslist' => $newsQueryBuilder->getNewsWithPagination(),
+        ]);
     }
 
     /**
@@ -44,9 +32,12 @@ class NewsController extends Controller
      *
      * @return \View
      */
-    public function create(): View
+    public function create(CategoriesQueryBuilder $categoriesQueryBuilder): View
     {
-        return \view('admin.news.create');
+        return \view('admin.news.create', [
+            'categories' => $categoriesQueryBuilder->getAll(),
+            'statuses' => NewsStatus::all()
+        ]);
     }
 
     /**
@@ -55,17 +46,15 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => 'required'
         ]);
-        //dd($request->all());
-        //dd($request->input('title','default'));
-        //dd($request->only(['title', 'description']));
-        //dd($request->except(['title', 'description']));
-        //dd(response()->json($request()->only(['title', 'author', 'description'])));
-        return response()->json($request->only(['title', 'author', 'description']));
+        $news = new News($request->except('_token', 'category_id')); //News::create();
+        if ($news->save()) {
+            return redirect()->route('admin.news.index')->with('success', 'Новость добавлена');
+        } else \back()->with('errror', 'Не удалось добавить новость');
     }
 
     /**
@@ -85,9 +74,13 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(News $news, CategoriesQueryBuilder $categoriesQueryBuilder): View
     {
-        //
+        return \view('admin.news.edit', [
+            'news' => $news,
+            'categories' => $categoriesQueryBuilder->getAll(),
+            'statuses' => NewsStatus::all()
+        ]);
     }
 
     /**
@@ -97,9 +90,14 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, News $news): RedirectResponse
     {
-        //
+        $news = $news->fill($request->except('_token', 'category_ids'));
+        if ($news->save()) {
+            $news->categories()->sync((array)$request->input('category_ids'));
+            return redirect()->route('admin.news.index')->with('success', 'Новость обновлена');
+            \back()->with('errror', 'Не удалось обновить новость');
+        }
     }
 
     /**
