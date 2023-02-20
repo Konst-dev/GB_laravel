@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Categories\CreateCategoryRequest;
+use App\Http\Requests\Categories\EditCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\QueryBuilders\CategoriesQueryBuilder;
@@ -41,15 +43,12 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateCategoryRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required'
-        ]);
-        $categories = new Category($request->except('_token')); //News::create();
-        if ($categories->save()) {
-            return redirect()->route('admin.categories.index')->with('success', 'Категория добавлена');
-        } else \back()->with('errror', 'Не удалось добавить категорию');
+        $categories = Category::create($request->validated());
+        if ($categories) {
+            return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.create.success'));
+        } else \back()->with('errror', __('messages.admin.category.create.fail'));
     }
 
     /**
@@ -83,12 +82,12 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category): RedirectResponse
+    public function update(EditCategoryRequest $request, Category $category): RedirectResponse
     {
-        $category = $category->fill($request->except('_token'));
+        $category = $category->fill($request->validated());
         if ($category->save()) {
-            return redirect()->route('admin.categories.index')->with('success', 'Категория обновлена');
-            \back()->with('errror', 'Не удалось обновить категорию');
+            return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.edit.success'));
+            \back()->with('errror', __('messages.admin.category.edit.fail'));
         }
     }
 
@@ -98,8 +97,16 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            // dd($category);
+            // die;
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+
+            return \response()->json('error', 400);
+        }
     }
 }
