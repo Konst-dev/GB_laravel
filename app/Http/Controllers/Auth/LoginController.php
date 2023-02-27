@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\LoginEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticate;
 use App\Providers\RouteServiceProvider;
@@ -45,5 +46,10 @@ class LoginController extends Controller
     {
         Auth::logout();
         return redirect()->route('login');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        event(new LoginEvent($user));
     }
 }
