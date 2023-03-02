@@ -11,6 +11,10 @@
                         <a href="{{ route('social.auth.redirect', ['driver' => 'vkontakte']) }}"><strong>Вход через
                                 ВК</strong>
                         </a>
+                        <br>
+                        <a href="{{ route('social.auth.redirect', ['driver' => 'github']) }}"><strong>Вход через
+                                Github</strong>
+                        </a>
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
