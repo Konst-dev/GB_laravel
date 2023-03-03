@@ -3,7 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Categories\CreateCategoryRequest;
+use App\Http\Requests\Categories\EditCategoryRequest;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\QueryBuilders\CategoriesQueryBuilder;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class CategoryController extends Controller
 {
@@ -12,9 +18,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(CategoriesQueryBuilder $categoriesQueryBuilder)
     {
-        //
+        return \view('admin.categories.categories', [
+            'categoriesList' => $categoriesQueryBuilder->getAll(),
+        ]);
     }
 
     /**
@@ -22,9 +30,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(CategoriesQueryBuilder $categoriesQueryBuilder)
     {
-        //
+        return \view('admin.categories.create', [
+            'categories' => $categoriesQueryBuilder->getAll(),
+        ]);
     }
 
     /**
@@ -33,9 +43,12 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateCategoryRequest $request): RedirectResponse
     {
-        //
+        $categories = Category::create($request->validated());
+        if ($categories) {
+            return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.create.success'));
+        } else \back()->with('errror', __('messages.admin.category.create.fail'));
     }
 
     /**
@@ -55,9 +68,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category): View
     {
-        //
+        return \view('admin.categories.edit', [
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -67,9 +82,13 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditCategoryRequest $request, Category $category): RedirectResponse
     {
-        //
+        $category = $category->fill($request->validated());
+        if ($category->save()) {
+            return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.edit.success'));
+            \back()->with('errror', __('messages.admin.category.edit.fail'));
+        }
     }
 
     /**
@@ -78,8 +97,16 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            // dd($category);
+            // die;
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+
+            return \response()->json('error', 400);
+        }
     }
 }

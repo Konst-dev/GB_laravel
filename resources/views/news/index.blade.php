@@ -19,11 +19,13 @@
                                 href="{{ route('news.show', ['id' => $item->id, 'cat' => $cat]) }}">{{ $item->title }}</a>
                         </h3>
                         <div class="mb-1 text-muted">{{ $item->created_at }}</div>
-                        <p class="card-text mb-auto">{{ $item->description }}</p>
-                        <a href="{{ route('news.show', ['id' => $item->id, 'cat' => $cat]) }}">Читать далее...</a>
+                        <p class="card-text mb-auto">{!! $item->description !!}</p>
+                        <a
+                            href="@if (!$item->link) {{ route('news.show', ['id' => $item->id, 'cat' => $cat]) }}@else {{ $item->link }} @endif">Читать
+                            далее...</a>
                     </div>
                     <img class="card-img-right flex-auto d-none d-md-block" data-src="holder.js/200x250?theme=thumb"
-                        alt="Card image cap">
+                        src="{{ Storage::disk('public')->url($item->image) }}" alt="Card image cap">
                 </div>
             </div>
         @endforeach
