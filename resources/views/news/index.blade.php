@@ -25,7 +25,7 @@
                             далее...</a>
                     </div>
                     <img class="card-img-right flex-auto d-none d-md-block" data-src="holder.js/200x250?theme=thumb"
-                        alt="Card image cap">
+                        src="{{ Storage::disk('public')->url($item->image) }}" alt="Card image cap">
                 </div>
             </div>
         @endforeach
