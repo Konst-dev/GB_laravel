@@ -8,6 +8,7 @@ use App\Http\Controllers\{NewsController, OrderController, SocialProvidersContro
 use App\Http\Controllers\Account\IndexController as AccountController;
 use App\Http\Controllers\Admin\ParserAndSaveController;
 use App\Http\Controllers\Admin\ParserController;
+use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,7 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('news', AdminNewsController::class);
         Route::resource('users', AdminUserController::class);
+        Route::resource('resources', AdminResourceController::class);
     });
 });
 Route::get('/hello/{name}', static function (string $name): string {

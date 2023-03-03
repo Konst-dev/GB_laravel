@@ -32,6 +32,6 @@ class JobNewsParsing implements ShouldQueue
      */
     public function handle(Parser $parser)
     {
-        $parser->setLink($this->link)->saveParseData();
+        $parser->setLink($this->link)->saveParseDataToDatabase();
     }
 }

@@ -23,9 +23,17 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.users.index') }}">
+                            <a class="nav-link @if (request()->routeIs('admin.users.*')) active @endif"
+                                href="{{ route('admin.users.index') }}">
                                 <span data-feather="users"></span>
                                 Пользователи
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @if (request()->routeIs('admin.resources.*')) active @endif"
+                                href="{{ route('admin.resources.index') }}">
+                                <span data-feather="file"></span>
+                                Источники
                             </a>
                         </li>
 
