@@ -19,7 +19,7 @@
                                 href="{{ route('news.show', ['id' => $item->id, 'cat' => $cat]) }}">{{ $item->title }}</a>
                         </h3>
                         <div class="mb-1 text-muted">{{ $item->created_at }}</div>
-                        <p class="card-text mb-auto">{{ $item->description }}</p>
+                        <p class="card-text mb-auto">{!! $item->description !!}</p>
                         <a
                             href="@if (!$item->link) {{ route('news.show', ['id' => $item->id, 'cat' => $cat]) }}@else {{ $item->link }} @endif">Читать
                             далее...</a>

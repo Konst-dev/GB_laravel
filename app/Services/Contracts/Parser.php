@@ -6,4 +6,5 @@ interface Parser
 {
     public function setLink(string $link);
     public function getParseData();
+    public function saveParseData();
 }
