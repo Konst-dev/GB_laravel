@@ -32,7 +32,8 @@ class CreateRequest extends FormRequest
             'author' => ['nullable', 'string', 'min:2', 'max:50'],
             'status' => ['required', new Enum(NewsStatus::class)],
             'image' => ['sometimes'],
-            'description' => ['nullable', 'string']
+            'description' => ['nullable', 'string'],
+            'guid' => ['nullable', 'integer'],
         ];
     }
     public function getCategoryIds(): array
